@@ -43,9 +43,13 @@ function Home() {
 
             } catch (e) {
                 dispatch(setError({ error: true }))
-                setSearchOutput(<p>Error: {e.message}</p>)
+                setSearchOutput(<p>Error: {e.message}<br />Another request in 5 sec...</p>)
+
             } finally {
                 dispatch(setLoading({ loading: false }))
+                if (getState().homework8.error) {
+                    setTimeout(() => dispatch(getFunFact()), 5000)
+                }
             }
 
         }
