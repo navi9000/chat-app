@@ -34,7 +34,8 @@ export const usersSlice = createSlice({
                 userChats: []
             }
         ],
-        activeUserId: 1
+        activeUserId: 1,
+        isAuthenticated: false
     },
     reducers: {
         updateMessagesRead: (state, action) => {
@@ -47,9 +48,12 @@ export const usersSlice = createSlice({
             const newArr = current(state.value[userIndex].userChats).filter(el => el.chatId !== chatId)
             state.value[userIndex].userChats = newArr
             console.log(state.value[userIndex].userChats)
+        },
+        changeIsAuthenticated: (state, action) => {
+            state.isAuthenticated = action.payload
         }
     }
 })
 
-export const { updateMessagesRead, deleteUserChat } = usersSlice.actions
+export const { updateMessagesRead, deleteUserChat, changeIsAuthenticated } = usersSlice.actions
 export default usersSlice.reducer

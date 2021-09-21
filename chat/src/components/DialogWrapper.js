@@ -14,6 +14,8 @@ import { useParams, useLocation } from 'react-router-dom'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { getThemeProps } from '@material-ui/styles'
+import firebase from "firebase/compat/app";
+import database from "firebase/database"
 
 const useStyles = makeStyles(() => ({
     DialogWrapper: {
@@ -25,6 +27,29 @@ const useStyles = makeStyles(() => ({
         backgroundColor: "transparent"
     }
 }))
+
+// const db = firebase.database()
+
+// const addMessageWithFirebase = (chatId, message) => async () => {
+//     db.ref('messages').child(chatId).child(message.id).set(message)
+// }
+
+// const initMessageTracking = () => dispatch => {
+//     db.ref('messages').on('child_changed', snapshot => {
+//         const payload = getPayloadFromSnapshot(snapshot)
+//         dispatch({
+//             type: CHANGE_MESSAGES,
+//             payload
+//         })
+//     })
+//     db.ref('messages').on('child_added', snapshot => {
+//         const payload = getPayloadFromSnapshot(snapshot)
+//         dispatch({
+//             type: CHANGE_MESSAGES,
+//             payload
+//         })
+//     })
+// }
 
 function DialogWrapper() {
 
@@ -65,19 +90,26 @@ function DialogWrapper() {
 
     const sendMessage = msg => {
         dispatch(addMessage({ id: dialogId, newChatState: [...chat, { userId: activeUserId, text: msg }] }))
+        // updateMessagesRead({ userId: activeUserId, chatId: Number(dialogId), numberOfMessages: chat.length + 1 })
         // updateMessagesReadHandler(chat.length + 1)
-        dispatch(sendMessageAsync())
+        // dispatch(sendMessageAsync(msg))
         // setShouldUpdate(false)
     }
 
     // Send Message Using Async Function
-    function sendMessageAsync() {
-        return dispatch => {
-            setTimeout(() => {
-                dispatch(updateMessagesRead({ userId: activeUserId, chatId: Number(dialogId), numberOfMessages: chat.length + 1 }))
-                console.log('Bot Message: Message Added')
-            }, 1500)
-        }
+    const sendMessageAsync = msg => (dispatch, getState) => {
+        const messages = chat.dialog
+        // dispatch(addMessageWithFirebase(dialogId, {
+        //     ...msg,
+        //     id: `${dialogId}-${messages?.length || 0}-${Date.now()}`,
+        // }))
+
+
+        // dispatch(updateMessagesRead({ userId: activeUserId, chatId: Number(dialogId), numberOfMessages: chat.length + 1 }))
+        setTimeout(() => {
+            console.log('Bot Message: Message Added')
+        }, 1500)
+
     }
 
     function deleteChat(user, chat) {
