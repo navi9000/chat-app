@@ -5,7 +5,7 @@ export const usersSlice = createSlice({
     initialState: {
         value: [
             {
-                userId: 1,
+                userId: "rdSwEem8ZQZlfaIejVUjZIlf4Th1",
                 name: "John",
                 pic: "https://material-ui.com/static/images/avatar/1.jpg",
                 userChats: [
@@ -51,9 +51,13 @@ export const usersSlice = createSlice({
         },
         changeIsAuthenticated: (state, action) => {
             state.isAuthenticated = action.payload
+        },
+        setActiveUserId: (state, action) => {
+            console.log(action.payload)
+            state.activeUserId = action.payload
         }
     }
 })
 
-export const { updateMessagesRead, deleteUserChat, changeIsAuthenticated } = usersSlice.actions
+export const { updateMessagesRead, deleteUserChat, changeIsAuthenticated, setActiveUserId } = usersSlice.actions
 export default usersSlice.reducer

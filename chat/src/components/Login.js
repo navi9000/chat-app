@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import { Link, useHistory } from "react-router-dom"
 import { useDispatch } from 'react-redux';
-import { changeIsAuthenticated } from './usersSlice';
+import { changeIsAuthenticated, setActiveUserId } from './usersSlice';
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -25,16 +25,17 @@ function Login() {
         e.preventDefault();
         setError("");
 
-        try {
-            const auth = getAuth()
-            console.log('before await')
-            await signInWithEmailAndPassword(auth, email, password);
-            dispatch(changeIsAuthenticated(true))
-            history.push('/')
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+        const auth = getAuth()
+        signInWithEmailAndPassword(auth, email, password)
+            .then(userCredential => {
+                dispatch(setActiveUserId(userCredential.user.uid))
+                dispatch(changeIsAuthenticated(true))
+                history.push('/')
+            })
+            .catch(error => {
+                setError(error.message);
+            })
+    }
 
     return (
         <div>

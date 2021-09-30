@@ -1,11 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles'
+import { useSelector } from 'react-redux'
+import { useFirebase } from 'react-redux-firebase'
+import { useState, useEffect } from 'react'
 
 import DialogLink from './DialogLink';
 
-import useCurrentUserChats from './hooks/useCurrentUserChats';
+// import useCurrentUserChats from './hooks/useCurrentUserChats';
 
-import { useSelector, useDispatch } from 'react-redux'
-// import { toggle } from './features/checkbox/checkboxSlice'
 
 const useStyles = makeStyles(() => ({
     list: {
@@ -16,30 +17,44 @@ const useStyles = makeStyles(() => ({
     }
 }))
 
-function SideList(props) {
+function SideList() {
 
     const styles = useStyles()
 
-    // const chats = useSelector(state => state.chats.chatsArr)
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [chats, setChats] = useState([])
 
-    const chats = useCurrentUserChats()
-    // const users = useSelector(state => state.users.value)
-    // const dispatch = useDispatch()
+
+    // Не уверен, что логика здесь правильная (м.б. добавить return?)
+    useEffect(() => {
+        getCurrentUserChats()
+            .then(() => {
+                setIsLoaded(true)
+                console.log("effect", chats)
+            })
+    }, [chats])
+
+    const currentUserId = useSelector(state => state.users.activeUserId)
+    const firebase = useFirebase()
+
+    async function getCurrentUserChats() {
+        try {
+            const snapshot = await firebase.ref('userChats').get(currentUserId)
+            const result = snapshot.val()[currentUserId]
+            setChats(await Object.keys(result).map(el => result[el]))
+        } catch (e) {
+            console.warn(e)
+        }
+    }
 
     function renderSide() {
         return chats.map(chat => (
-            // <Box key={el.id}>
-            //     <Badge badgeContent={getUnreadMessages(el.dialog)} color="primary">
-            //         <Avatar src={el.pic} />
-            //     </Badge>
-            //     <div>{el.dialog.length == 0 ? "No messages" : el.dialog[el.dialog.length - 1].text}</div>
-            // </Box>
-            <DialogLink chat={chat} key={chat.id} />
+            <DialogLink chat={chat} key={chat.chatId} />
         ))
     }
 
     return (
-        <div className={styles.list} children={renderSide()}></div>
+        <div className={styles.list} children={isLoaded ? renderSide() : (<div>Loading...</div>)}></div>
     )
 }
 

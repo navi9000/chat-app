@@ -2,7 +2,9 @@ import { useSelector } from 'react-redux';
 import useCurrentUserChats from './useCurrentUserChats'
 
 function useChatData(id, type = 'dialog') {
-    const chats = useSelector(state => state.chats.chatsArr)
+    // const chats = useSelector(state => state.chats.chatsArr)
+    const chats = useSelector(state => state.firebase.chats.id)
+    console.log(chats)
     const currentUserChats = useCurrentUserChats()
 
     function getDialog() {

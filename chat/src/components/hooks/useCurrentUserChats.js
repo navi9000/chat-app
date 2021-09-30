@@ -1,11 +1,20 @@
 import { useSelector } from 'react-redux'
+import { useFirebase } from 'react-redux-firebase'
 
-function useCurrentUserChats() {
+async function useCurrentUserChats() {
 
     const currentUserId = useSelector(state => state.users.activeUserId)
-    const users = useSelector(state => state.users.value)
+    const firebase = useFirebase()
 
-    return users.find(el => el.userId === currentUserId).userChats
+    try {
+        const snapshot = await firebase.ref('userChats').get(currentUserId)
+        const result = snapshot.val()[currentUserId]
+        console.log(Object.keys(result).map(el => result[el]))
+        return Object.keys(result).map(el => result[el])
+    } catch (e) {
+        console.log(e)
+        return []
+    }
 
 }
 

@@ -59,6 +59,8 @@ function DialogWrapper() {
 
     const { dialogId } = useParams()
 
+    console.log(dialogId)
+
     const chat = useChatData(Number(dialogId))
 
     const activeUserId = useSelector(state => state.users.activeUserId)

@@ -1,14 +1,25 @@
 import { useState } from 'react'
+import { useFirebase } from 'react-redux-firebase'
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
+// import "firebase/compat/auth"
+import "firebase/compat/database"
+// import { getDatabase, ref, set, get, child, update } from "firebase/database"
 import { Link } from "react-router-dom"
 import { changeIsAuthenticated } from "./usersSlice"
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("");
     const [error, setError] = useState("");
     const dispatch = useDispatch()
+
+    const firebase = useFirebase()
+
+    const handleUsernameChange = e => {
+        setUsername(e.target.value)
+    }
 
     const handlePassChange = (e) => {
         setPassword(e.target.value);
@@ -25,17 +36,46 @@ function Signup() {
         const auth = getAuth()
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                const user = userCredential.user
+                firebase.set(`users/${userCredential.user.uid}`, { username: username, profilePic: "" })
+                firebase.ref('info').get('numberOfUsers')
+                    .then(snapshot => firebase.update('info', { numberOfUsers: snapshot.val().numberOfUsers + 1 }))
+
+
+                // const db = getDatabase()
+                // const infoRef = ref(db, 'info')
+                // get(infoRef).then(snapshot => {
+                //     const numberOfUsers = snapshot.val().numberOfUsers
+                //     const usersRef = ref(db, 'users/' + userCredential.user.reloadUserInfo.localId)
+                //     set(usersRef, {
+                //         username: username,
+                //         profilePic: ""
+                //     })
+
+                //     const updates = {}
+                //     updates['info/numberOfUsers'] = numberOfUsers + 1
+                //     update(ref(db), updates)
+
+                // })
+
                 dispatch(changeIsAuthenticated(true))
-            })
-            .catch(error => {
+            }).catch(error => {
                 setError(error.message);
             });
     }
+
     return (
         <div>
             <form onSubmit={handleSubmit}>
                 <p>Fill in the form below to register new account.</p>
+                <div>
+                    <input
+                        placeholder="User Name"
+                        name="username"
+                        type="text"
+                        onChange={handleUsernameChange}
+                        value={username}
+                    />
+                </div>
                 <div>
                     <input
                         placeholder="Email"
