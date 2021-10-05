@@ -1,9 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector } from 'react-redux'
-
-import useUserData from './hooks/useUserData'
-import useChatData from './hooks/useChatData'
-
+import { useChatData, useUserData } from '../../helpers/customHooks'
 import clsx from 'clsx'
 
 const useStyles = makeStyles(() => ({
@@ -55,19 +52,16 @@ const useStyles = makeStyles(() => ({
 function Message(props) {
 
     const { st_message, st_unread, st_username, st_activeUsername, st_activeUser, st_wrapper, st_beforeUnreadBlock } = useStyles()
-
     const activeUserId = useSelector(state => state.users.activeUserId)
-
-    const userName = useUserData(props.data.userId, 'name')
-
+    const userName = useUserData(props.data.userId, 'username')
     const messagesRead = useChatData(props.dialogId, 'messagesRead')
 
     return (
         <div className={clsx([st_wrapper,
             activeUserId === props.data.userId && st_activeUser,
             props.index >= messagesRead && st_unread,
-            props.index == messagesRead && st_beforeUnreadBlock])}>
-            <div className={st_message}>{props.data.text}</div>
+            props.index === messagesRead && st_beforeUnreadBlock])}>
+            <div className={st_message}>{props.data.message}</div>
             <div className={clsx([st_username, activeUserId === props.data.userId && st_activeUsername])}>{userName}</div>
         </div >
     )

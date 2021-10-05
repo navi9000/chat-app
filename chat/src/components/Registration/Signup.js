@@ -1,18 +1,56 @@
 import { useState } from 'react'
 import { useFirebase } from 'react-redux-firebase'
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
-// import "firebase/compat/auth"
 import "firebase/compat/database"
-// import { getDatabase, ref, set, get, child, update } from "firebase/database"
 import { Link } from "react-router-dom"
-import { changeIsAuthenticated } from "./usersSlice"
-import { useSelector, useDispatch } from 'react-redux';
+import { changeIsAuthenticated } from "../Home/usersSlice"
+import { useDispatch } from 'react-redux';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(() => ({
+    login: {
+        margin: "0",
+        padding: "0",
+        boxSizing: "border-box"
+    },
+    button: {
+        margin: "20px 10px 0 0",
+        display: "inline-block",
+        border: "none",
+        padding: "10px",
+        borderRadius: "10px",
+        backgroundColor: "#c20e0e",
+        color: "#ffffff",
+        fontWeight: "700",
+        cursor: "pointer",
+    },
+    input: {
+        border: "none",
+        boxSizing: "border-box",
+        height: "30px",
+        width: "200px",
+    },
+    feedback: {
+        width: "400px",
+        margin: "20px auto 0",
+        backgroundColor: "rgba(255,0,0,0.4)",
+        padding: "1px"
+    },
+    feedbackSuccess: {
+        width: "400px",
+        margin: "20px auto 0",
+        backgroundColor: "rgba(0,255,0,0.4)",
+        padding: "1px"
+    }
+}))
 
 function Signup() {
+    const styles = useStyles()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false)
     const dispatch = useDispatch()
 
     const firebase = useFirebase()
@@ -37,25 +75,9 @@ function Signup() {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 firebase.set(`users/${userCredential.user.uid}`, { username: username, profilePic: "" })
+                setSuccess(true)
                 firebase.ref('info').get('numberOfUsers')
                     .then(snapshot => firebase.update('info', { numberOfUsers: snapshot.val().numberOfUsers + 1 }))
-
-
-                // const db = getDatabase()
-                // const infoRef = ref(db, 'info')
-                // get(infoRef).then(snapshot => {
-                //     const numberOfUsers = snapshot.val().numberOfUsers
-                //     const usersRef = ref(db, 'users/' + userCredential.user.reloadUserInfo.localId)
-                //     set(usersRef, {
-                //         username: username,
-                //         profilePic: ""
-                //     })
-
-                //     const updates = {}
-                //     updates['info/numberOfUsers'] = numberOfUsers + 1
-                //     update(ref(db), updates)
-
-                // })
 
                 dispatch(changeIsAuthenticated(true))
             }).catch(error => {
@@ -68,7 +90,7 @@ function Signup() {
             <form onSubmit={handleSubmit}>
                 <p>Fill in the form below to register new account.</p>
                 <div>
-                    <input
+                    <input className={styles.input}
                         placeholder="User Name"
                         name="username"
                         type="text"
@@ -77,7 +99,7 @@ function Signup() {
                     />
                 </div>
                 <div>
-                    <input
+                    <input className={styles.input}
                         placeholder="Email"
                         name="email"
                         type="email"
@@ -86,7 +108,7 @@ function Signup() {
                     />
                 </div>
                 <div>
-                    <input
+                    <input className={styles.input}
                         placeholder="Password"
                         name="password"
                         onChange={handlePassChange}
@@ -95,10 +117,10 @@ function Signup() {
                     />
                 </div>
                 <div>
-                    {error && <p>{error}</p>}
-                    <button type="submit">Login</button>
+                    {error && <div className={styles.feedback}><p>{error}</p></div>}
+                    {success && <div className={styles.feedbackSuccess}><p>You are registered!</p></div>}
+                    <button type="submit" className={styles.button}>Register</button>
                 </div>
-                <hr />
                 <p>
                     Already have an account? <Link to="/login">Sign in</Link>
                 </p>

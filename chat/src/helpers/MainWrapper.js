@@ -1,6 +1,4 @@
-import NavBar from './NavBar'
-import SideList from './SideList'
-
+import NavBar from '../components/NavBar'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(() => ({
@@ -13,7 +11,6 @@ const useStyles = makeStyles(() => ({
         gridTemplateRows: "1fr 14fr",
         backgroundColor: "rgba(50, 50, 50, 0.1)"
     }
-
 }))
 
 function MainWrapper(props) {
@@ -23,7 +20,7 @@ function MainWrapper(props) {
     return (
         <div className={styles.mainWrapper}>
             <NavBar />
-            <SideList />
+            {props.aside}
             {props.content}
         </div>
     )

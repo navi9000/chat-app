@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
 import { makeStyles } from '@material-ui/core/styles'
-import { useSelector, useDispatch } from "react-redux"
-import { useParams } from 'react-router-dom'
-
 
 const useStyles = makeStyles(() => ({
     area: {
@@ -36,10 +33,12 @@ const useStyles = makeStyles(() => ({
 
 function InputArea(props) {
 
-
     const styles = useStyles()
-
-    const [inputMessage, setInputMessage] = useState('');
+    const [inputMessage, setInputMessage] = useState('')
+    const textInput = useRef(null)
+    useEffect(() => {
+        textInput.current.focus()
+    })
 
     const onSendMessage = () => {
         if (inputMessage) {
@@ -48,23 +47,9 @@ function InputArea(props) {
         }
     }
 
-    // const arrLength = props.arr.length;
-
-    // useEffect(() => setTimeout(() => {
-    //     if (arrLength > 0) {
-    //         console.log('Message added');
-    //     }
-    // }, 1500), [arrLength]);
-
-    // const textInput = useRef()
-
-    // focus() {
-    //     this.textInput.current.focus()
-    // }
-
     return (
         <div className={styles.area} >
-            <input placeholder="Enter your message" className={styles.text} value={inputMessage} onChange={e => setInputMessage(e.target.value)} onKeyDown={({ key }) => { if (key === 'Enter') onSendMessage() }} />
+            <input ref={textInput} placeholder="Enter your message" className={styles.text} value={inputMessage} onChange={e => setInputMessage(e.target.value)} onKeyDown={({ key }) => { if (key === 'Enter') onSendMessage() }} />
             <button className={styles.button} onClick={onSendMessage}>Send</button>
         </div>
     )

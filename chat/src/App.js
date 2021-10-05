@@ -1,45 +1,33 @@
 import './App.css';
 
-import MainWrapper from './components/MainWrapper'
-import AuthWrapper from './components/AuthWraper';
-import DialogWrapper from './components/DialogWrapper'
-import UserProfile from './components/UserProfile'
+import MainWrapper from './helpers/MainWrapper'
+import AuthWrapper from './components/Registration/AuthWraper'
+import DialogWrapper from './components/Chat/DialogWrapper'
 import Home from './components/Home'
-import Search from './components/Search';
-import Login from './components/Login'
-import Signup from './components/Signup'
+import Search from './components/Search'
+import Login from './components/Registration/Login'
+import Signup from './components/Registration/Signup'
+import SideList from './components/Chat/SideList'
+import SearchAside from './components/Search/SearchAside'
 
-import CustomRoute from './utils/CustomRoute';
-
-import firebase from "firebase/compat/app";
-import { firebaseConfig } from './firebase';
-
-import { useEffect } from 'react';
-
+import CustomRoute from './helpers/CustomRoute'
 
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 
 function App() {
-  useEffect(() => {
-    firebase.initializeApp(firebaseConfig)
-  }, [])
 
   return (
     <Router>
       <Switch>
         <CustomRoute path='/dialogs/:dialogId' secured>
-          <MainWrapper content={<DialogWrapper />} />
+          <MainWrapper content={<DialogWrapper />} aside={<SideList />} />
         </CustomRoute>
         <CustomRoute path='/search' secured>
-          <MainWrapper content={<Search />} />
-        </CustomRoute>
-        <CustomRoute path="/users" secured>
-          <MainWrapper content={<UserProfile />} />
+          <MainWrapper content={<Search />} aside={<SearchAside />} />
         </CustomRoute>
         <Route path="/login">
           <AuthWrapper content={<Login />} />
@@ -48,7 +36,7 @@ function App() {
           <AuthWrapper content={<Signup />} />
         </Route>
         <CustomRoute path="/" secured>
-          <MainWrapper content={<Home />} />
+          <MainWrapper content={<Home />} aside={<SideList />} />
         </CustomRoute>
       </Switch>
     </Router>

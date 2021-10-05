@@ -1,24 +1,37 @@
-// function Home() {
-//     return (
-//         <div className="Home">Home Page</div>
-//     )
-// }
-
-
-
-
-// домашнее задание 8
-
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { API_URL, setLoading, setData, setError } from './homework8Slice'
+import { makeStyles } from '@material-ui/core'
+
+const useStyles = makeStyles(() => ({
+    wrapper: {
+        height: "100px",
+    },
+    buttonDiv: {
+        padding: "10px"
+    },
+    button: {
+        display: "block",
+        margin: "0 auto",
+        color: "#ffffff",
+        backgroundColor: "#c20e0e",
+        border: "none",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontWeight: "bolder",
+        padding: "0 auto"
+    },
+    output: {
+        textAlign: "center",
+        padding: "10px"
+    }
+
+}))
 
 function Home() {
-
+    const styles = useStyles()
     const [searchOutput, setSearchOutput] = useState((<></>))
-
     const dispatch = useDispatch()
-
 
     const getFunFact = () => async (dispatch, getState) => {
         const { homework8: { loading } } = getState()
@@ -51,7 +64,6 @@ function Home() {
                     setTimeout(() => dispatch(getFunFact()), 5000)
                 }
             }
-
         }
     }
 
@@ -61,9 +73,11 @@ function Home() {
 
 
     return (
-        <div style={{ height: "30%", padding: "10px" }}>
-            <button onClick={clickHandler}>Get Fun Fact</button>
-            <div>{searchOutput}</div>
+        <div className={styles.wrapper}>
+            <div className={styles.buttonDiv}>
+                <button onClick={clickHandler} className={styles.button}>Get Fun Fact</button>
+            </div>
+            <div className={styles.output}>{searchOutput}</div>
         </div>
     )
 }

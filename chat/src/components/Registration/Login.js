@@ -2,9 +2,37 @@ import { useState } from 'react'
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import { Link, useHistory } from "react-router-dom"
 import { useDispatch } from 'react-redux';
-import { changeIsAuthenticated, setActiveUserId } from './usersSlice';
+import { changeIsAuthenticated, setActiveUserId } from '../Home/usersSlice'
+import { makeStyles } from '@material-ui/core'
+
+const useStyles = makeStyles(() => ({
+    button: {
+        margin: "20px 10px 0 0",
+        display: "inline-block",
+        border: "none",
+        padding: "10px",
+        borderRadius: "10px",
+        backgroundColor: "#c20e0e",
+        color: "#ffffff",
+        fontWeight: "700",
+        cursor: "pointer",
+    },
+    input: {
+        border: "none",
+        boxSizing: "border-box",
+        height: "30px",
+        width: "200px",
+    },
+    feedback: {
+        width: "400px",
+        margin: "20px auto 0",
+        backgroundColor: "rgba(255,0,0,0.4)",
+        padding: "1px"
+    }
+}))
 
 function Login() {
+    const styles = useStyles()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -15,7 +43,6 @@ function Login() {
     const handlePassChange = (e) => {
         setPassword(e.target.value);
     }
-
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -38,11 +65,11 @@ function Login() {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className={styles.login}>
+            <form onSubmit={handleSubmit} className={styles.form}>
                 <p>Fill in the form below to login to your account.</p>
                 <div>
-                    <input
+                    <input className={styles.input}
                         placeholder="Email"
                         name="email"
                         type="email"
@@ -51,7 +78,7 @@ function Login() {
                     />
                 </div>
                 <div>
-                    <input
+                    <input className={styles.input}
                         placeholder="Password"
                         name="password"
                         onChange={handlePassChange}
@@ -60,10 +87,9 @@ function Login() {
                     />
                 </div>
                 <div>
-                    {error && <p>{error}</p>}
-                    <button type="submit">Login</button>
+                    {error && <div className={styles.feedback}><p>{error}</p></div>}
+                    <button type="submit" className={styles.button}>Login</button>
                 </div>
-                <hr />
                 <p>
                     Don't have an account? <Link to="/signup">Sign up</Link>
                 </p>

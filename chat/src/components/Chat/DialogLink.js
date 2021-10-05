@@ -1,10 +1,7 @@
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import { makeStyles } from '@material-ui/core';
-
-import useUserData from './hooks/useUserData'
-import useIsCurrentPage from './hooks/useIsCurrentPage'
-import useChatData from './hooks/useChatData'
+import { useUserData, useIsCurrentPage, useChatData } from '../../helpers/customHooks'
 
 import { Link } from 'react-router-dom'
 
@@ -21,8 +18,8 @@ const useStyles = makeStyles(() => ({
         color: "#000000"
     },
     avatar: {
-        width: "100%",
-        height: "100%"
+        width: "69px",
+        height: "69px"
     },
     flexContainer: {
         display: "flex",
@@ -38,18 +35,13 @@ const useStyles = makeStyles(() => ({
     },
     active: {
         backgroundColor: "rgba(0,0,0,0.1)"
-    },
-    // badge: {
-    //     "& span": {
-    //         display: "none"
-    //     }
-    // }
+    }
 }))
 
 function DialogLink(props) {
 
-    const userName = useUserData(props.chat.userId, 'name')
-    const userPic = useUserData(props.chat.userId, 'pic')
+    const userName = useUserData(props.chat.partnerId, 'username')
+    const userPic = useUserData(props.chat.partnerId, 'profilePic')
 
     const styles = useStyles()
 
@@ -61,7 +53,7 @@ function DialogLink(props) {
     return (
         <Link to={'/dialogs/' + props.chat.chatId} key={props.chat.chatId} className={clsx([styles.container, isCurrent && styles.active])}>
             <div>
-                <Badge badgeContent={numberOfMessages - props.chat.messagesRead} color="primary" className={clsx(isCurrent && styles.badge)} overlap="circular">
+                <Badge badgeContent={Math.max(numberOfMessages - props.chat.messagesRead, 0)} color="primary" overlap="circular">
                     <Avatar src={userPic} className={styles.avatar} />
                 </Badge>
             </div>
