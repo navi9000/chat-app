@@ -31,7 +31,7 @@ function NavButton(props) {
     const styles = useStyles()
 
     return (
-        <Link to={props.link} className={styles.navButton}>
+        <Link to={props.link} className={styles.navButton} onClick={props.clickHandler}>
             <i className={"fas fa-" + props.fa + " fa-lg " + styles.i}></i>
             <p className={styles.text}>{props.text}</p>
         </Link>

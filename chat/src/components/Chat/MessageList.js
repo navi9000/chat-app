@@ -35,7 +35,7 @@ function MessageList(props) {
                     <Message key={i} data={object} index={i} dialogId={props.id} />
                 ))
             }
-            <CloseDialogButton className={styles.closeBtn} chatId={props.id} delete={props.delete} />
+            <CloseDialogButton className={styles.closeBtn} chatId={props.id} />
         </div>
     )
 }
